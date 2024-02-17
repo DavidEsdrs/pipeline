@@ -44,14 +44,14 @@ func readFromFile(filesNames chan string) chan string {
 
 		scanner := bufio.NewScanner(f)
 
-		for scanner.Scan() {
-			line := scanner.Text()
-			out <- line
+		for scanner.Scan() { // enquanto não chegamos ao fim do arquivo, continuamos a lê-lo...
+			line := scanner.Text() // capturamos a linha atual e armazenamos em "line"
+			out <- line            // mandamos para o canal...
 		}
 	}
 
 	go func() {
-		for f := range filesNames { // enquanto o canal estiver aberto...
+		for f := range filesNames { // enquanto o canal "filesName" estiver aberto...
 			wg.Add(1)
 			go process(f) // lançamos uma goroutine para cada arquivo
 		}
@@ -82,14 +82,17 @@ func processLine(lines chan string) chan int {
 func countFromLine(in chan int) int64 {
 	result := int64(0)
 
-	for n := range in {
+	for n := range in { // os valores chegados do canal de "processLine" chegam aqui
+
+		// adicionamos o valor a result atomicamente para garantir que não haja acessos
+		// concorrentes à result
 		atomic.AddInt64(&result, int64(n))
 	}
 
 	return result
 }
 
-func Execute() {
+func main() {
 	start := time.Now()
 
 	readOutput := readFromFolder("files")
@@ -99,5 +102,5 @@ func Execute() {
 
 	duration := time.Since(start)
 
-	fmt.Printf("%v - it took %vms", result, duration.Milliseconds())
+	fmt.Printf("%v palavras contadas em %vms", result, duration.Milliseconds())
 }
