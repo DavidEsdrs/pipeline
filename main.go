@@ -1,4 +1,4 @@
-package pipeline
+package main
 
 import (
 	"bufio"
@@ -16,12 +16,12 @@ func readFromFolder(folderName string) chan string {
 	go func() {
 		entries, err := os.ReadDir(folderName) // lê o diretório e retorna todos os "entries" (arquivos/pastas)
 
-		if err != nil {
+		if err != nil { // interrompe a execução imediatamente ao encontrar um erro
 			panic(err)
 		}
 
-		for _, e := range entries {
-			out <- "files/" + e.Name()
+		for _, e := range entries { // para cada arquivo encontrado...
+			out <- "files/" + e.Name() // ...envie o nome para o canal de saída
 		}
 
 		close(out)
