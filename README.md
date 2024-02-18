@@ -37,6 +37,26 @@ retornado ao fim da função.
 6° `main`:
 Compomos as etapas e calculamos o tempo que levou todo o processo.
 
+## Como executar
+
+Clone o respositório em uma pasta local. Você pode utilizar a build que está disponível na pasta `builds` para um resultado mais realista:
+```sh
+// no windows powershell
+.\builds\pipeline.exe
+
+// num terminal linux
+chmod +x pipeline
+./pipeline
+```
+Você pode executar a build de desenvolvimento, para isso, você deve ter a [runtime do Go instalada na sua máquina](https://go.dev/dl/) (o projeto foi desenvolvido utilzando go v1.21). Após instalar, execute o código principal:
+```sh
+go run main.go
+```
+Em ambos os casos, você obterá um resultado semelhante a esse:
+```sh
+30102 palavras contadas em 2ms
+```
+
 ## Considerações
 
 - Essa pipeline NÃO necessariamente é mais performática que uma versão equivalente
