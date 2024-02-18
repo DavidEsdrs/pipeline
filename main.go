@@ -84,7 +84,7 @@ func readFileContent(files chan *os.File) chan string {
 	return out
 }
 
-func countWords(lines chan string) chan int {
+func processLine(lines chan string) chan int {
 	out := make(chan int, 1024)
 
 	go func() {
@@ -121,15 +121,17 @@ func countFromLine(in chan int) int64 {
 }
 
 func main() {
-	start := time.Now()
+	start := time.Now() // iremos calcular o tempo...
 
-	readOutput := readFromFolder("files")
+	// apenas compomos as etapas da pipeline, usando o canal de output de uma
+	// como input da outra
+	readOutput := readFromFolder("files") // "files" é o nome da pasta que iremos ler
 	filesOutput := readFile(readOutput)
 	contentOutput := readFileContent(filesOutput)
-	countOutput := countWords(contentOutput)
+	countOutput := processLine(contentOutput)
 	result := countFromLine(countOutput)
 
-	duration := time.Since(start)
+	duration := time.Since(start) // ...que a pipeline demorou para dar o resultado final
 
-	fmt.Printf("%v palavras contadas em %vms", result, duration.Milliseconds())
+	fmt.Printf("%v palavras contadas em %vms", result, duration.Milliseconds()) // printamos o resultado e o tempo que levou para calcular
 }
